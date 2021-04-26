@@ -1,0 +1,108 @@
+﻿<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>Intro to MapView - Create a 2D map | Sample | ArcGIS API for JavaScript 4.19</title>
+    <style >
+      html,
+      body,#Div{
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+      }
+      
+      #viewDiv{
+        height: 95%;
+        width: 80%;
+        float:left;
+      }
+     #titleDiv{
+        height:5%;
+      }
+      #basemapDiv{
+        height:95%;
+        width:20%;
+        float:left;
+      }
+      
+    </style>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.19/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.19/"></script>
+
+    <script>
+      require(["esri/Map", "esri/views/MapView", "esri/widgets/Compass", "esri/widgets/Home", "esri/widgets/ScaleBar", "esri/layers/FeatureLayer", "esri/widgets/Search", "esri/widgets/Legend", "esri/widgets/Expand", "esri/widgets/BasemapGallery"], (Map, MapView, Compass, Home, ScaleBar, FeatureLayer, Search, Legend, Expand, BasemapGallery) => {
+        const url = "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/ACS_Housing_Tenure_by_Heating_Fuel_Boundaries/FeatureServer/1";
+        var featurelayer = new FeatureLayer({
+            url: url
+        });
+        
+        const map = new Map({
+          basemap: "gray-vector",
+          layers:[featurelayer]
+        });
+
+        const view = new MapView({
+          container: "viewDiv",
+          map: map,
+          zoom: 4,
+          center: [-98, 38] // longitude, latitude
+        });
+        
+        view.ui.empty("top-left");
+        
+        var homeWidget = new Home({
+          view: view
+         });
+        view.ui.add(homeWidget, "top-left");
+        
+        var scaleBar = new ScaleBar({
+          view: view,
+          style:"ruler"
+        });
+        view.ui.add(scaleBar, {position: "bottom-left"});
+        
+        const searchWidget = new Search({
+          view: view
+        });
+        view.ui.add(searchWidget, {
+           position: "top-right",
+           index: 2
+        });
+        
+        var compass = new Compass({
+          view: view
+         });
+        view.ui.add(compass, "top-left");
+        
+              
+        var legend = new Legend({
+           view: view,
+           layerInfos: [{
+           layer: featurelayer,
+           title: "shows tenure (owner or renter) by type of heating fuel"}]
+        });
+        view.ui.add([new Expand({
+                view: view,
+                content: legend,
+                group: "top-right",
+                expanded: true
+              })], "top-right");
+        
+        var basemapGallery = new BasemapGallery({
+           container: "basemapDiv"
+        });
+
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="Div">
+    <div id="titleDiv" style="font-family:arial;color: #3b354e;font-size:26px;font-weight: 800;text-align:center;background-color:#B3A5C4">This is a map -- ACS housing use rights distribution</div>
+    <div id="viewDiv"></div>
+    <div id="basemapDiv" style="background-color:#DDE4EE;font-family:arial;color:#3B354E;font-size:20px;text-align:center">basemapGallery</div>
+    </div>
+  </body>
+</html>
